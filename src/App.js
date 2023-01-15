@@ -1,4 +1,3 @@
-import "./index.css";
 import {
   BrowserRouter as Router,
   Routes, //replaces "Switch" used till v5
@@ -8,6 +7,7 @@ import Home from "./Components/home/HomeComponent";
 import AboutUs from "./Components/about-us/AboutUsComponent";
 import PageNotFound from "./Components/page-not-found/PageNotFoundComponent";
 import Profile from "./Components/profile/ProfileComponent";
+import Blog from "./Components/blog/BlogComponent";
 
 function App() {
   return (
@@ -17,6 +17,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/blog" element={<Blog />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>

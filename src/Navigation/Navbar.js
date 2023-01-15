@@ -2,11 +2,13 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import React, { useState } from 'react'
+import '../index.css'
 
 const navigation = [
   { name: 'Home', href: '/', current: false },
   { name: 'About Us', href: 'about-us', current: false },
   { name: 'Journey', href: 'journey', current: false },
+  { name: 'Blog', href: 'blog', current: false },
 ]
 
 function classNames(...classes) {
@@ -149,7 +151,7 @@ export default function Navbar(props) {
                   />
                 </div>
                 <div className="hidden sm:ml-6 sm:block">
-                  <div className="flex space-x-4">
+                  <div className="flex space-x-4 custom_nav">
                     {navigation.map((item) => (
                       <a
                         key={item.name}
