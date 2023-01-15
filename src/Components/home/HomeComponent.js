@@ -1,4 +1,5 @@
 import Navbar from "../../Navigation/NavigationBar";
+import Footer from '../footer/FooterComponent'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 
@@ -18,6 +19,7 @@ function Home() {
                     <Button variant="primary" href="https://dydx.exchange/about" target="_blank">Learn More</Button>
                 </Card.Body>
             </Card>
+            <Footer />
         </div>
     );
 }
