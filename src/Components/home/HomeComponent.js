@@ -1,4 +1,4 @@
-import Navbar from "../../Navigation/Navbar";
+import Navbar from "../../Navigation/NavigationBar";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 

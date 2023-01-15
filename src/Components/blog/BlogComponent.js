@@ -1,4 +1,4 @@
-import Navbar from "../../Navigation/Navbar";
+import Navbar from "../../Navigation/NavigationBar";
 function Blog() {
     return (
         <div>

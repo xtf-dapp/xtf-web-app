@@ -1,14 +1,7 @@
-import Navbar from "../../Navigation/Navbar";
+import Navbar from "../../Navigation/NavigationBar";
 import React, { useState } from 'react'
 import { ethers } from 'ethers'
-import {
-    Card,
-    CardHeader,
-    CardBody,
-    CardFooter,
-    Typography,
-} from "@material-tailwind/react";
-
+import './ProfileComponent.css'
 
 /**
  * 
@@ -51,17 +44,12 @@ function Profile() {
     return (
         <div>
             <Navbar />
-            <Card className="w-96">
-                <CardBody className="text-center">
-                    <Typography variant="h5" className="mb-2">
-                        Profile
-                    </Typography>
-                    <Typography>
-                        Default Account: {defaultAccount} <br/>
-                        Balance: {userBalance}
-                    </Typography>
-                </CardBody>
-            </Card>
+            <div class="jumbotron">
+                <h1 class="display-4">Hello!</h1>
+                <p class="lead">Here are the information we found about you from MetaMask</p>
+                <hr class="my-4" />
+                <p>Account Address {defaultAccount} <br /> Balance {userBalance}</p>
+            </div>
         </div>
     );
 }
