@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Navbar, Nav, NavDropdown, Container } from 'react-bootstrap';
+import { Navbar, Nav, Container } from 'react-bootstrap';
 
 const navigation = [
   { name: 'Home', href: '/', current: false },
@@ -32,8 +32,8 @@ export default function NavigationBar(props: any) {
     if (window.ethereum) {
       window.ethereum.request({ method: 'eth_requestAccounts' })
         .then(function (result: any) {
-                setDefaultAccount(result[0]);
-            })
+          setDefaultAccount(result[0]);
+        })
     } else {
       console.log("Install Metamask");
     }
@@ -42,7 +42,7 @@ export default function NavigationBar(props: any) {
   const getMenu = () => {
     isLoggedIn()
 
-    if(defaultAccount){
+    if (defaultAccount) {
       return (<Nav>
         <Nav.Link href="/profile">Profile</Nav.Link>
       </Nav>)
