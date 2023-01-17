@@ -1,24 +1,27 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import {
+  BrowserRouter as Router,
+  Routes, //replaces "Switch" used till v5
+  Route,
+} from "react-router-dom";
+
+import AboutUs from "./components/about-us/AboutUsComponent";
+import Blog from "./components/blog/BlogComponent";
+import Home from "./components/home/HomeComponent";
+import PageNotFound from "./components/page-not-found/PageNotFoundComponent";
+import Profile from "./components/profile/ProfileComponent";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/about-us" element={<AboutUs />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
