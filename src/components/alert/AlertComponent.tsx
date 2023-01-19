@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Alert } from 'react-bootstrap';
-import './AlertComponent.css'
 
 function AlertComponent(props: any) {
     return (
