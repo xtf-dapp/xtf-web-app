@@ -1,3 +1,4 @@
+import React from 'react'
 import NavbarComponent from '../navigation/NavigationComponent'
 import { Button, Card } from 'react-bootstrap';
 

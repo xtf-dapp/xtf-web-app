@@ -1,3 +1,4 @@
+import React from 'react'
 import NavbarComponent from '../navigation/NavigationComponent'
 
 function PageNotFound() {
