@@ -5,7 +5,7 @@ function Trade(props: any) {
     return (
         <div>
             { !props.showNavbar ? <NavbarComponent /> : ""}
-            <Card style={{ width: '18rem' }}>
+            <Card border="info" style={{ width: '18rem', margin: '20px' }}>
                 <Card.Img variant="top" src="/dydx_exchange.png" />
                 <Card.Body>
                     <Card.Title>dydx Exchange</Card.Title>
