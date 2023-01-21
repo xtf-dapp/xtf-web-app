@@ -1,17 +1,50 @@
 import NavbarComponent from '../../navigation/NavigationComponent'
-import axios from 'axios';
 import Table from 'react-bootstrap/Table';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { DydxClient } from '@dydxprotocol/v3-client';
+
+const DYDX_HOST = 'https://api.stage.dydx.exchange';
 
 function DyDxComponent() {
     const [markets, setMarkets] = useState([])
+
     const connect = async () => {
-        axios.get("http://localhost:8001/api/markets")
-            .then(function (response) {
-                setMarkets(response.data)
+        if (window.ethereum) {
+            window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
+                if (accounts.length) {
+                    console.log(`You're connected to: ${accounts[0]}`);
+                }
             })
+        }
     }
-    connect()
+
+    const retrieveMarkets = async () => {
+        const client: DydxClient = new DydxClient(
+            DYDX_HOST,
+            {
+                apiTimeout: 3000,
+                starkPrivateKey: '01234abcd...',
+            },
+        );
+        if (markets.length <= 0) {
+            client.public.getMarkets().then((response) => {
+                console.log(response);
+                const local_markets: any = [];
+                for (var key in response.markets) {
+                    local_markets.push(response.markets[key]);
+                }
+                setMarkets(local_markets)
+            })
+        }
+    }
+
+    useEffect(() => {
+        // call api or anything
+        console.log("loaded");
+        connect()
+        retrieveMarkets()
+    });
+
     return (
         <div>
             <NavbarComponent />
@@ -27,7 +60,7 @@ function DyDxComponent() {
                         </tr>
                     </thead>
                     <tbody>
-                        { markets.map((item: any) => (
+                        {markets.map((item: any) => (
                             <tr key={item.id}>
                                 <td>{item.market}</td>
                                 <td>{item.baseAsset}</td>

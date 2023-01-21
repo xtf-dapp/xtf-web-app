@@ -31,8 +31,6 @@ export default function NavigationBar(props: any) {
           console.log("Metamask is not connected");
         }
       })
-    } else {
-      
     }
   }
 

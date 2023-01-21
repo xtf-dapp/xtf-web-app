@@ -45,6 +45,7 @@ function Profile() {
         <div>
             <Navbar />
             <div className="jumbotron">
+                {errorMessage}
                 <h1 className="display-4">Hello!</h1>
                 <p className="lead">Here are the information we found about you from MetaMask</p>
                 <hr className="my-4" />
