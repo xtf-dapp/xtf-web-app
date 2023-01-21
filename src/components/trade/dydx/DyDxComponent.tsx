@@ -2,21 +2,12 @@ import NavbarComponent from '../../navigation/NavigationComponent'
 import Table from 'react-bootstrap/Table';
 import React, { useState, useEffect } from 'react';
 import { DydxClient } from '@dydxprotocol/v3-client';
+import DyDxOrderComponent from './DyDxOrderComponent';
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
 
 function DyDxComponent() {
     const [markets, setMarkets] = useState([])
-
-    const connect = async () => {
-        if (window.ethereum) {
-            window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
-                if (accounts.length) {
-                    console.log(`You're connected to: ${accounts[0]}`);
-                }
-            })
-        }
-    }
 
     const retrieveMarkets = async () => {
         const client: DydxClient = new DydxClient(
@@ -39,9 +30,6 @@ function DyDxComponent() {
     }
 
     useEffect(() => {
-        // call api or anything
-        console.log("loaded");
-        connect()
         retrieveMarkets()
     });
 
@@ -57,6 +45,7 @@ function DyDxComponent() {
                             <th>Base Asset</th>
                             <th>type</th>
                             <th>volume24H</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -66,6 +55,7 @@ function DyDxComponent() {
                                 <td>{item.baseAsset}</td>
                                 <td>{item.type}</td>
                                 <td>{item.volume24H}</td>
+                                <td><DyDxOrderComponent market={item.market} /></td>
                             </tr>
                         ))}
                     </tbody>
