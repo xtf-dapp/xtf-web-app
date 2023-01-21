@@ -1,10 +1,10 @@
 import NavbarComponent from '../navigation/NavigationComponent'
 import { Button, Card } from 'react-bootstrap';
 
-function Trade() {
+function Trade(props: any) {
     return (
         <div>
-            <NavbarComponent />
+            { !props.showNavbar ? <NavbarComponent /> : ""}
             <Card style={{ width: '18rem' }}>
                 <Card.Img variant="top" src="/dydx_exchange.png" />
                 <Card.Body>
@@ -14,7 +14,7 @@ function Trade() {
                         While trading on our platform, traders enjoy the security, privacy,
                         and decentralization benefits of Starkware zero-knowledge proofs.
                     </Card.Text>
-                    <Button variant="primary" href="/trade/dydx" target="_blank">Trade</Button>
+                    <Button variant="primary" href="/trade/dydx" >Trade</Button>
                 </Card.Body>
             </Card>
         </div>
