@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button, Row, Col, InputGroup, Accordion } from 'react-bootstrap';
-import { DydxClient, SigningMethod, OrderSide, TimeInForce, OrderType } from '@dydxprotocol/v3-client';
+import { DydxClient, SigningMethod, OrderSide, TimeInForce, OrderType, Market, ApiKeyCredentials } from '@dydxprotocol/v3-client';
 import Web3 from 'web3'
 
 
@@ -23,6 +23,7 @@ function DyDxOrderComponent(props: any) {
                     var client: DydxClient = new DydxClient(
                         DYDX_HOST,
                         {
+                            apiTimeout: 3000,
                             networkId: 5,
                             web3: new Web3(window.ethereum),
                         },
@@ -32,9 +33,6 @@ function DyDxOrderComponent(props: any) {
 
 
                     client.onboarding.deriveStarkKey(address, SigningMethod.MetaMask).then((starKey) => {
-
-                        
-
                         client.ethPrivate.createApiKey(
                             address,
                             SigningMethod.MetaMask
@@ -93,26 +91,22 @@ function DyDxOrderComponent(props: any) {
         const client = new DydxClient(
             DYDX_HOST,
             {
+                apiTimeout: 3000,
                 networkId: 5,
                 web3: new Web3(window.ethereum),
                 apiKeyCredentials: apiKey,
-                starkPrivateKey: starKey,
+                starkPrivateKey: starKey.privateKey,
             },
         );
+
+        client.private.getActiveOrders(Market.ETH_USD).then((response) => {
+            console.log("getting existing order ", response);
+        }).then((response) => {
+            console.log("something wrong when getting aorders");
+        })
         console.log("Newly created clinet", client)
         console.log("Newly created clinet", props)
-        console.log("object sending ", JSON.stringify({
-            market: props.market,
-            side: orderSide === "BUY" ? OrderSide.BUY : OrderSide.SELL,
-            type: OrderType.LIMIT,
-            timeInForce: TimeInForce.GTT,
-            postOnly: postOnly === "FALSE" ? false : true,
-            size: '0.1',
-            price: '1',
-            limitFee: '0.015',
-            expiration: '2023-01-30T21:30:20.200Z',
-            clientId: "CL"+Date.now()
-        }))
+        
         client.private.createOrder(
             {
                 market: props.market,
