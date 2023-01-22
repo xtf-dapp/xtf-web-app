@@ -3,6 +3,7 @@ import { Modal, Form, Button, Row, Col, InputGroup, Accordion } from 'react-boot
 import { DydxClient, SigningMethod, OrderSide, TimeInForce, OrderType } from '@dydxprotocol/v3-client';
 import Web3 from 'web3'
 
+
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
 
 function DyDxOrderComponent(props: any) {
@@ -100,6 +101,18 @@ function DyDxOrderComponent(props: any) {
         );
         console.log("Newly created clinet", client)
         console.log("Newly created clinet", props)
+        console.log("object sending ", JSON.stringify({
+            market: props.market,
+            side: orderSide === "BUY" ? OrderSide.BUY : OrderSide.SELL,
+            type: OrderType.LIMIT,
+            timeInForce: TimeInForce.GTT,
+            postOnly: postOnly === "FALSE" ? false : true,
+            size: '0.1',
+            price: '1',
+            limitFee: '0.015',
+            expiration: '2023-01-30T21:30:20.200Z',
+            clientId: "CL"+Date.now()
+        }))
         client.private.createOrder(
             {
                 market: props.market,
@@ -111,7 +124,7 @@ function DyDxOrderComponent(props: any) {
                 price: '1',
                 limitFee: '0.015',
                 expiration: '2023-01-30T21:30:20.200Z',
-                clientId: "dasdasdasdasdasda"
+                clientId: "CL"+Date.now()
             },
             '1', // required for creating the order signature
         ).then((createOrderResponse) => {

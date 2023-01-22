@@ -5,9 +5,9 @@ import './NavigationComponent.css'
 
 const navigation = [
   { name: 'Home', href: '/', current: false },
-  { name: 'About Us', href: 'about-us', current: false },
-  { name: 'Journey', href: 'journey', current: false },
-  { name: 'Blog', href: 'blog', current: false },
+  { name: 'About Us', href: '/#/about-us', current: false },
+  { name: 'Journey', href: '/#/journey', current: false },
+  { name: 'Blog', href: '/#/blog', current: false },
 ]
 
 export default function NavigationBar(props: any) {
@@ -50,7 +50,7 @@ export default function NavigationBar(props: any) {
 
     if (defaultAccount) {
       return (<Nav>
-        <Nav.Link href="/profile">Profile</Nav.Link>
+        <Nav.Link href="/#/profile">Profile</Nav.Link>
       </Nav>)
     } else {
       return (<Nav>
@@ -75,7 +75,7 @@ export default function NavigationBar(props: any) {
             <Nav className="me-auto">
 
               {navigation.map(item => (
-                <Nav.Link href={item.href} >{item.name}</Nav.Link>
+                <Nav.Link href={item.href} key={item.name}>{item.name}</Nav.Link>
               ))}
             </Nav>
             {getMenu()}
