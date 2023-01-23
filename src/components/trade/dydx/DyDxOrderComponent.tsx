@@ -19,7 +19,6 @@ function DyDxOrderComponent(props: any) {
         if (window.ethereum) {
             window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
                 if (accounts.length) {
-                    console.log(`You're connected to: ${accounts[0]}`);
                     var client: DydxClient = new DydxClient(
                         DYDX_HOST,
                         {
@@ -29,104 +28,57 @@ function DyDxOrderComponent(props: any) {
                         },
                     );
                     const address = Web3.utils.toChecksumAddress(accounts[0]);
-
-
-
-                    client.onboarding.deriveStarkKey(address, SigningMethod.MetaMask).then((starKey) => {
-                        client.ethPrivate.createApiKey(
-                            address,
-                            SigningMethod.MetaMask
-                        ).then((resFromGetAPIKeys) => {
-                            console.log("Succcess from GET API ", resFromGetAPIKeys)
-                            return new Promise((resolve, reject) => resolve(resFromGetAPIKeys))
-                        }).catch((errorFromApiKey) => {
-                            console.log("Error from API Keys retreival ", errorFromApiKey)
-                            client.onboarding.createUser(
-                                {
+                    client.onboarding.deriveStarkKey(address, SigningMethod.MetaMask)
+                        .then(async (starKey) => {
+                            if (localStorage.getItem(address + "_key")) {
+                                return JSON.parse(localStorage.getItem(address + "_key") || "")
+                            }
+                            try {
+                                const resFromGetAPIKeys = await client.onboarding.recoverDefaultApiCredentials(address, SigningMethod.MetaMask);
+                                return { "APIKey": resFromGetAPIKeys, "StarkKey": starKey };
+                            } catch (errorFromApiKey) {
+                                const responseFromNewUser = await client.onboarding.createUser({
                                     starkKey: starKey.publicKey,
                                     starkKeyYCoordinate: starKey.publicKeyYCoordinate,
                                     country: 'SG'
-                                },
-                                address,
-                                null,
-                                SigningMethod.MetaMask
-                            ).then((responseFromNewUser) => {
-                                return new Promise((resolve, reject) => resolve(responseFromNewUser.apiKey))
-                            })
-                        }).then((finalCombined) => {
-                            console.log("Final COombined call", finalCombined)
-                            nextSteps(finalCombined, starKey)
+                                }, address, null, SigningMethod.MetaMask);
+                                return { "APIKey": responseFromNewUser.apiKey, "StarkKey": starKey };
+                            }
                         })
+                        .then(async (responseFromPreviousPromise: any) => {
+                            localStorage.setItem(address + "_key", JSON.stringify(responseFromPreviousPromise))
+                            const private_client = new DydxClient(
+                                DYDX_HOST,
+                                {
+                                    apiTimeout: 3000,
+                                    networkId: 5,
+                                    web3: new Web3(window.ethereum),
+                                    apiKeyCredentials: responseFromPreviousPromise.APIKey,
+                                    starkPrivateKey: responseFromPreviousPromise.StarkKey.privateKey,
+                                }
+                            );
 
-                        // client.onboarding.createUser(
-                        //     {
-                        //         starkKey: starKey.publicKey,
-                        //         starkKeyYCoordinate: starKey.publicKeyYCoordinate,
-                        //         country: 'SG'
-                        //     },
-                        //     address,
-                        //     null,
-                        //     SigningMethod.MetaMask
-                        // ).then((creteUserResp) => {
-                        //     nextSteps(creteUserResp.apiKey, starKey)
-                        // }).catch((erroWhenCreatingUser) => {
-                        //     console.log("Error Creating User ", erroWhenCreatingUser)
-                        //     if(erroWhenCreatingUser.contains("already in use")){
-                        //         //StarKey is already in use, user is already registered:
-                        //         client.private.getApiKeys().then((getApiKeyResponse) => {
-                        //             nextSteps(getApiKeyResponse, starKey)
-                        //         })
-                        //     }
-                        // })
-                    });
-
-
+                            try {
+                                const createOrderResponse = await private_client.private.createOrder({
+                                    market: props.market,
+                                    side: orderSide === "BUY" ? OrderSide.BUY : OrderSide.SELL,
+                                    type: OrderType.LIMIT,
+                                    timeInForce: TimeInForce.GTT,
+                                    postOnly: postOnly === "FALSE" ? false : true,
+                                    size: '0.1',
+                                    price: '1',
+                                    limitFee: '0.015',
+                                    expiration: '2023-01-30T21:30:20.200Z'
+                                }, '1');
+                                console.log("Got Response from create order action");
+                                console.log(createOrderResponse);
+                            } catch (errorFromCreateOrder) {
+                                console.log(errorFromCreateOrder);
+                            }
+                        });
                 }
             })
         }
-    }
-
-    const nextSteps = async (apiKey: any, starKey: any) => {
-        console.log("nextSteps ", apiKey, starKey)
-        const client = new DydxClient(
-            DYDX_HOST,
-            {
-                apiTimeout: 3000,
-                networkId: 5,
-                web3: new Web3(window.ethereum),
-                apiKeyCredentials: apiKey,
-                starkPrivateKey: starKey.privateKey,
-            },
-        );
-
-        client.private.getActiveOrders(Market.ETH_USD).then((response) => {
-            console.log("getting existing order ", response);
-        }).then((response) => {
-            console.log("something wrong when getting aorders");
-        })
-        console.log("Newly created clinet", client)
-        console.log("Newly created clinet", props)
-        
-        client.private.createOrder(
-            {
-                market: props.market,
-                side: orderSide === "BUY" ? OrderSide.BUY : OrderSide.SELL,
-                type: OrderType.LIMIT,
-                timeInForce: TimeInForce.GTT,
-                postOnly: postOnly === "FALSE" ? false : true,
-                size: '0.1',
-                price: '1',
-                limitFee: '0.015',
-                expiration: '2023-01-30T21:30:20.200Z',
-                clientId: "CL"+Date.now()
-            },
-            '1', // required for creating the order signature
-        ).then((createOrderResponse) => {
-            console.log("Got Response from create order action")
-            console.log(createOrderResponse)
-        }).catch((errorFromCreateOrder) => {
-            console.log(errorFromCreateOrder)
-        })
     }
 
     return (
