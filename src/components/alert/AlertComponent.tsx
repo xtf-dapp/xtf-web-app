@@ -3,7 +3,7 @@ import { Alert } from 'react-bootstrap';
 
 function AlertComponent(props: any) {
     return (
-        <div style={{ position: "absolute", top: 10, right: 0, zIndex: 999, width: 500 }}>
+        <div style={{ position: "absolute", top: 10, right: 0, zIndex: 10000, width: 500 }}>
             <Alert
                 variant="danger"
                 show={props.show}

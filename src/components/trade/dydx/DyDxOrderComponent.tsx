@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Modal, Form, Button, Row, Col, InputGroup, Accordion } from 'react-bootstrap';
 import { DydxClient, SigningMethod, OrderSide, TimeInForce, OrderType, Market, ApiKeyCredentials } from '@dydxprotocol/v3-client';
 import Web3 from 'web3'
+import AlertComponent from '../../alert/AlertComponent';
+import { AxiosError } from 'axios';
 
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
@@ -12,10 +14,16 @@ function DyDxOrderComponent(props: any) {
     const [type, setType] = useState("LIMIT");
     const [postOnly, setPostOnly] = useState("FALSE");
     const [secondCurrency, setSecondCurrency] = useState(0.0);
-    const [firstCurrency, setFirstCurrency] = useState(0.0);
-    const [price, setPrice] = useState(0.0);
+    const [firstCurrency, setFirstCurrency] = useState(0.001);
+    const [price, setPrice] = useState(1000);
+    const [showAlert, setShowAlert] = useState({ show: false, title: "", body: "" });
+    const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
     const connect = async () => {
+        if(!checkBoxChecked){
+            setShowAlert({ show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet"})
+            return;
+        }
         if (window.ethereum) {
             window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
                 if (accounts.length) {
@@ -65,15 +73,19 @@ function DyDxOrderComponent(props: any) {
                                     type: OrderType.LIMIT,
                                     timeInForce: TimeInForce.GTT,
                                     postOnly: postOnly === "FALSE" ? false : true,
-                                    size: '0.1',
-                                    price: '1',
+                                    size: firstCurrency.toString(),
+                                    price: price.toString(),
                                     limitFee: '0.015',
-                                    expiration: '2023-01-30T21:30:20.200Z'
+                                    expiration: addOneDay()
                                 }, '1');
                                 console.log("Got Response from create order action");
                                 console.log(createOrderResponse);
-                            } catch (errorFromCreateOrder) {
-                                console.log(errorFromCreateOrder);
+                                setShow(false)
+                            } catch (errorFromCreateOrder: any) {
+                                const err = errorFromCreateOrder as AxiosError
+                                const str = JSON.parse(err.message.substring(err.message.indexOf("-") + 1))
+                                setShowAlert({ show: true, title: "Create Order Failed", body: str.errors[0].msg })
+                                setShow(false)
                             }
                         });
                 }
@@ -81,12 +93,23 @@ function DyDxOrderComponent(props: any) {
         }
     }
 
+    const addOneDay = () => {
+        const newDate = new Date();
+        newDate.setDate(newDate.getDate() + 1);
+        return newDate.toISOString();
+    }
+
+    const closeAlert = (arg: any) => {
+        console.log("something")
+        setShowAlert({ show: false, title: "", body: "" })
+    }
+
     return (
         <>
+            <AlertComponent show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert} />
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setShow(true)}>
                 Transact
             </button>
-
             <Modal show={show} onHide={() => setShow(false)}>
                 <Modal.Header closeButton>
                     <Modal.Title>{props.market}</Modal.Title>
@@ -127,7 +150,7 @@ function DyDxOrderComponent(props: any) {
                         <Row>
                             <Col>
                                 <InputGroup className="mb-3">
-                                    <Form.Control type="number" name="price" step=".0001" value={firstCurrency} onChange={(tarEnv) => setFirstCurrency(parseFloat(tarEnv.target.value))} />
+                                    <Form.Control type="number" name="price" step=".001" value={firstCurrency} onChange={(tarEnv) => setFirstCurrency(parseFloat(tarEnv.target.value))} />
                                     <InputGroup.Text id="basic-addon1">{props.market.split('-')[0]}</InputGroup.Text>
                                 </InputGroup>
                             </Col>
@@ -149,18 +172,30 @@ function DyDxOrderComponent(props: any) {
                             Worst accepted price of the base asset in USD.
                         </Form.Text>
                     </Form.Group>
-                    <Accordion defaultActiveKey="0">
-                        <Accordion.Item eventKey="0">
-                            <Accordion.Header>Advance</Accordion.Header>
-                            <Accordion.Body>
-                                Good Till Time will be by default set to 1 Day
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
+                    <Form.Group className="mb-3" controlId="formBasicEmail">
+                        <Form.Label>Advance Options</Form.Label>
+                        <Accordion defaultActiveKey="-1">
+                            <Accordion.Item eventKey="0">
+                                <Accordion.Header>Good Till Time</Accordion.Header>
+                                <Accordion.Body>
+                                    Good Till Time will be by default set to 1 Day
+                                </Accordion.Body>
+                            </Accordion.Item>
+                            <Accordion.Item eventKey="1">
+                                <Accordion.Header>Limit Fee</Accordion.Header>
+                                <Accordion.Body>
+                                    Set default to 0.015
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                    </Form.Group>
+                    <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
+                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShow(false)}>Close</Button>
-                    <Button variant="primary" onClick={() => connect()}>Save changes</Button>
+                    <Button variant="primary" onClick={() => connect()}>Trade</Button>
                 </Modal.Footer>
             </Modal>
         </>
