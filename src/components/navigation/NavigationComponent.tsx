@@ -1,26 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import AlertComponent from '../alert/AlertComponent';
 import './NavigationComponent.css'
 
 const navigation = [
-  { name: 'Home', href: '/', current: false },
-  { name: 'About Us', href: '/#/about-us', current: false },
-  { name: 'Journey', href: '/#/journey', current: false },
-  { name: 'Blog', href: '/#/blog', current: false },
+  { name: 'Home', href: '/xtf-web-app/', current: false },
+  { name: 'About Us', href:  '/xtf-web-app/#/about-us', current: false },
+  { name: 'Journey', href: '/xtf-web-app/#/journey', current: false },
+  { name: 'Blog', href: '/xtf-web-app/#/blog', current: false },
 ]
 
 export default function NavigationBar(props: any) {
   const [defaultAccount, setDefaultAccount] = useState(null);
-  const [showAlert, setShowAlert] = useState({ show: false, title: "", body: ""});
+  const [showAlert, setShowAlert] = useState({ show: false, title: "", body: "" });
 
-  for (const index in navigation) {
-    if (navigation[index].name === props.currentNode) {
-      navigation[index].current = true;
-    } else {
-      navigation[index].current = false;
+  useEffect(() => {
+
+    if (navigation) {
+      for (const index in navigation) {
+        if (navigation[index].name === props.currentNode) {
+          navigation[index].current = true;
+        } else {
+          navigation[index].current = false;
+        }
+      }
     }
-  }
+
+  });
+
+
   const isLoggedIn = () => {
     if (window.ethereum) {
       window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
@@ -41,7 +49,7 @@ export default function NavigationBar(props: any) {
           setDefaultAccount(result[0]);
         })
     } else {
-      setShowAlert({ show: true, title: "Error Message", body: "Install Metamask"});
+      setShowAlert({ show: true, title: "Error Message", body: "Install Metamask" });
     }
   }
 
@@ -50,7 +58,7 @@ export default function NavigationBar(props: any) {
 
     if (defaultAccount) {
       return (<Nav>
-        <Nav.Link href="/#/profile">Profile</Nav.Link>
+        <Nav.Link href="/xtf-web-app/#/profile">Profile</Nav.Link>
       </Nav>)
     } else {
       return (<Nav>
@@ -61,15 +69,15 @@ export default function NavigationBar(props: any) {
 
   const closeAlert = (arg: any) => {
     console.log("something")
-    setShowAlert({ show: false, title: "", body: ""})
+    setShowAlert({ show: false, title: "", body: "" })
   }
 
   return (
     <div>
-      <AlertComponent show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert}/>
+      <AlertComponent show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert} />
       <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark" className="navbar-custom">
         <Container>
-          <Navbar.Brand href="#home">XTF</Navbar.Brand>
+          <Navbar.Brand href="/xtf-web-app/">XTF</Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="me-auto">
