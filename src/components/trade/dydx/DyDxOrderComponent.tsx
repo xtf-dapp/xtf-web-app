@@ -24,6 +24,7 @@ function DyDxOrderComponent(props: any) {
             setShowAlert({ show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet" })
             return;
         }
+        setShowAlert({ show: false, title: "", body: "" })
         if (window.ethereum) {
             console.log(window.ethereum)
             window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
@@ -198,7 +199,7 @@ function DyDxOrderComponent(props: any) {
                         </Accordion>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" value={checkBoxChecked} onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
+                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" value={checkBoxChecked+""} onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
