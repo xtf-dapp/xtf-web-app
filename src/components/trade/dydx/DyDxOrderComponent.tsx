@@ -14,7 +14,7 @@ function DyDxOrderComponent(props: any) {
     const [type, setType] = useState("LIMIT");
     const [postOnly, setPostOnly] = useState("FALSE");
     const [secondCurrency, setSecondCurrency] = useState(0.0);
-    const [firstCurrency, setFirstCurrency] = useState(0.001);
+    const [firstCurrency, setFirstCurrency] = useState(0.01);
     const [price, setPrice] = useState(1000);
     const [showAlert, setShowAlert] = useState({ show: false, title: "", body: "" });
     const [checkBoxChecked, setCheckBoxChecked] = useState(false);
@@ -43,15 +43,15 @@ function DyDxOrderComponent(props: any) {
                                 return JSON.parse(localStorage.getItem(address + "_key") || "")
                             }
                             try {
-                                const resFromGetAPIKeys = await client.onboarding.recoverDefaultApiCredentials(address, SigningMethod.MetaMask);
-                                return { "APIKey": resFromGetAPIKeys, "StarkKey": starKey };
-                            } catch (errorFromApiKey) {
                                 const responseFromNewUser = await client.onboarding.createUser({
                                     starkKey: starKey.publicKey,
                                     starkKeyYCoordinate: starKey.publicKeyYCoordinate,
                                     country: 'SG'
                                 }, address, null, SigningMethod.MetaMask);
                                 return { "APIKey": responseFromNewUser.apiKey, "StarkKey": starKey };
+                            } catch (errorFromApiKey) {
+                                const resFromGetAPIKeys = await client.onboarding.recoverDefaultApiCredentials(address, SigningMethod.MetaMask);
+                                return { "APIKey": resFromGetAPIKeys, "StarkKey": starKey };
                             }
                         })
                         .then(async (responseFromPreviousPromise: any) => {
@@ -158,7 +158,7 @@ function DyDxOrderComponent(props: any) {
                         <Row>
                             <Col>
                                 <InputGroup className="mb-3">
-                                    <Form.Control type="number" name="price" step=".001" value={firstCurrency} onChange={(tarEnv) => setFirstCurrency(parseFloat(tarEnv.target.value))} />
+                                    <Form.Control type="number" name="price" step=".01" value={firstCurrency} onChange={(tarEnv) => setFirstCurrency(parseFloat(tarEnv.target.value))} />
                                     <InputGroup.Text id="basic-addon1">{props.market.split('-')[0]}</InputGroup.Text>
                                 </InputGroup>
                             </Col>
@@ -198,7 +198,7 @@ function DyDxOrderComponent(props: any) {
                         </Accordion>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
+                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" value={checkBoxChecked} onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
