@@ -20,8 +20,8 @@ function DyDxOrderComponent(props: any) {
     const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
     const connect = async () => {
-        if(!checkBoxChecked){
-            setShowAlert({ show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet"})
+        if (!checkBoxChecked) {
+            setShowAlert({ show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet" })
             return;
         }
         if (window.ethereum) {
@@ -67,7 +67,9 @@ function DyDxOrderComponent(props: any) {
                             );
 
                             try {
-                                const createOrderResponse = await private_client.private.createOrder({
+                                const accountResponse = await private_client.private.getAccount(address);
+                                console.log("response from get Accountts", accountResponse)
+                                var reqObj = {
                                     market: props.market,
                                     side: orderSide === "BUY" ? OrderSide.BUY : OrderSide.SELL,
                                     type: OrderType.LIMIT,
@@ -77,11 +79,17 @@ function DyDxOrderComponent(props: any) {
                                     price: price.toString(),
                                     limitFee: '0.015',
                                     expiration: addOneDay()
-                                }, '1');
+                                };
+                                console.log("Request sent for create order ", reqObj)
+                                const createOrderResponse = await private_client.private.createOrder(
+                                    reqObj, 
+                                    accountResponse.account.positionId);
                                 console.log("Got Response from create order action");
                                 console.log(createOrderResponse);
                                 setShow(false)
+
                             } catch (errorFromCreateOrder: any) {
+                                console.log(errorFromCreateOrder)
                                 const err = errorFromCreateOrder as AxiosError
                                 const str = JSON.parse(err.message.substring(err.message.indexOf("-") + 1))
                                 setShowAlert({ show: true, title: "Create Order Failed", body: str.errors[0].msg })
@@ -100,7 +108,6 @@ function DyDxOrderComponent(props: any) {
     }
 
     const closeAlert = (arg: any) => {
-        console.log("something")
         setShowAlert({ show: false, title: "", body: "" })
     }
 
