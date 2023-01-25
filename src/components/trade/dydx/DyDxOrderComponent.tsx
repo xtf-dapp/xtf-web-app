@@ -40,23 +40,23 @@ function DyDxOrderComponent(props: any) {
                     const address = Web3.utils.toChecksumAddress(accounts[0]);
                     client.onboarding.deriveStarkKey(address, SigningMethod.MetaMask)
                         .then(async (starKey) => {
-                            if (localStorage.getItem(address + "_key")) {
-                                return JSON.parse(localStorage.getItem(address + "_key") || "")
-                            }
+                            console.log("retrieving of starKey was successful")
                             try {
                                 const responseFromNewUser = await client.onboarding.createUser({
                                     starkKey: starKey.publicKey,
                                     starkKeyYCoordinate: starKey.publicKeyYCoordinate,
                                     country: 'SG'
                                 }, address, null, SigningMethod.MetaMask);
+                                console.log("Creation of New user was successful")
                                 return { "APIKey": responseFromNewUser.apiKey, "StarkKey": starKey };
                             } catch (errorFromApiKey) {
+                                console.log("Creation of new user was unsuccessful")
                                 const resFromGetAPIKeys = await client.onboarding.recoverDefaultApiCredentials(address, SigningMethod.MetaMask);
                                 return { "APIKey": resFromGetAPIKeys, "StarkKey": starKey };
                             }
                         })
                         .then(async (responseFromPreviousPromise: any) => {
-                            localStorage.setItem(address + "_key", JSON.stringify(responseFromPreviousPromise))
+                            // localStorage.setItem(address + "_key", JSON.stringify(responseFromPreviousPromise))
                             const private_client = new DydxClient(
                                 DYDX_HOST,
                                 {
@@ -165,7 +165,7 @@ function DyDxOrderComponent(props: any) {
                             </Col>
                             <Col>
                                 <InputGroup className="mb-3">
-                                    <Form.Control type="number" name="price" step=".0001" value={secondCurrency} onChange={(tarEnv) => setSecondCurrency(parseFloat(tarEnv.target.value))} />
+                                    <Form.Control type="number" name="price" step=".0001" value={secondCurrency} onChange={(tarEnv) => setSecondCurrency(parseFloat(tarEnv.target.value))} disabled/>
                                     <InputGroup.Text id="basic-addon1">{props.market.split('-')[1]}</InputGroup.Text>
                                 </InputGroup>
                             </Col>
