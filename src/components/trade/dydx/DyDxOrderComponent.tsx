@@ -25,6 +25,7 @@ function DyDxOrderComponent(props: any) {
             return;
         }
         if (window.ethereum) {
+            console.log(window.ethereum)
             window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
                 if (accounts.length) {
                     var client: DydxClient = new DydxClient(
@@ -59,7 +60,7 @@ function DyDxOrderComponent(props: any) {
                                 DYDX_HOST,
                                 {
                                     apiTimeout: 3000,
-                                    networkId: 5,
+                                    networkId: 0x5,
                                     web3: new Web3(window.ethereum),
                                     apiKeyCredentials: responseFromPreviousPromise.APIKey,
                                     starkPrivateKey: responseFromPreviousPromise.StarkKey.privateKey,
@@ -80,7 +81,7 @@ function DyDxOrderComponent(props: any) {
                                     limitFee: '0.015',
                                     expiration: addOneDay()
                                 };
-                                console.log("Request sent for create order ", reqObj)
+                                console.log("Request sent for create order ", JSON.stringify(reqObj))
                                 const createOrderResponse = await private_client.private.createOrder(
                                     reqObj, 
                                     accountResponse.account.positionId);
