@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/xtf-web-app/static/css/main.53bbe097.chunk.css",
-    "main.js": "/xtf-web-app/static/js/main.a73ef135.chunk.js",
-    "main.js.map": "/xtf-web-app/static/js/main.a73ef135.chunk.js.map",
+    "main.js": "/xtf-web-app/static/js/main.ffd3e7da.chunk.js",
+    "main.js.map": "/xtf-web-app/static/js/main.ffd3e7da.chunk.js.map",
     "runtime-main.js": "/xtf-web-app/static/js/runtime-main.b1119ed4.js",
     "runtime-main.js.map": "/xtf-web-app/static/js/runtime-main.b1119ed4.js.map",
     "static/css/2.f26e749f.chunk.css": "/xtf-web-app/static/css/2.f26e749f.chunk.css",
@@ -21,6 +21,6 @@
     "static/css/2.f26e749f.chunk.css",
     "static/js/2.0f5fde20.chunk.js",
     "static/css/main.53bbe097.chunk.css",
-    "static/js/main.a73ef135.chunk.js"
+    "static/js/main.ffd3e7da.chunk.js"
   ]
 }
