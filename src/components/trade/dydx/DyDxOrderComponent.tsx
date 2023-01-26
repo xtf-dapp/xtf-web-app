@@ -7,6 +7,8 @@ import { AxiosError } from 'axios';
 
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
+const DYDX_NETWORK_ID = 5;
+const alert_constant = { show: false, title: "", body: "", variant: "danger" };
 
 function DyDxOrderComponent(props: any) {
     const [show, setShow] = useState(false);
@@ -16,15 +18,15 @@ function DyDxOrderComponent(props: any) {
     const [secondCurrency, setSecondCurrency] = useState(0.0);
     const [firstCurrency, setFirstCurrency] = useState(0.01);
     const [price, setPrice] = useState(1000);
-    const [showAlert, setShowAlert] = useState({ show: false, title: "", body: "" });
+    const [showAlert, setShowAlert] = useState(alert_constant);
     const [checkBoxChecked, setCheckBoxChecked] = useState(false);
 
     const connect = async () => {
         if (!checkBoxChecked) {
-            setShowAlert({ show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet" })
+            setShowAlert({ variant: "danger", show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet" })
             return;
         }
-        setShowAlert({ show: false, title: "", body: "" })
+        setShowAlert(alert_constant)
         if (window.ethereum) {
             console.log(window.ethereum)
             window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
@@ -33,7 +35,7 @@ function DyDxOrderComponent(props: any) {
                         DYDX_HOST,
                         {
                             apiTimeout: 3000,
-                            networkId: 5,
+                            networkId: DYDX_NETWORK_ID,
                             web3: new Web3(window.ethereum),
                         },
                     );
@@ -61,7 +63,7 @@ function DyDxOrderComponent(props: any) {
                                 DYDX_HOST,
                                 {
                                     apiTimeout: 3000,
-                                    networkId: 0x5,
+                                    networkId: DYDX_NETWORK_ID,
                                     web3: new Web3(window.ethereum),
                                     apiKeyCredentials: responseFromPreviousPromise.APIKey,
                                     starkPrivateKey: responseFromPreviousPromise.StarkKey.privateKey,
@@ -71,6 +73,14 @@ function DyDxOrderComponent(props: any) {
                             try {
                                 const accountResponse = await private_client.private.getAccount(address);
                                 console.log("response from get Accountts", accountResponse)
+                                const equity = +accountResponse.account.equity
+                                if (equity <= 0) {
+                                    setShowAlert({ variant: "warn", show: true, title: "Not enough funds", body: "Adding test net tokens" })
+                                    await new Promise(resolve => setTimeout(resolve, 3000)); // 3 sec
+                                    const testNetTokens = await private_client.private.requestTestnetTokens();
+                                    setShowAlert({ variant: "info", show: true, title: "Adding funds", body: `Amount with ${testNetTokens.transfer.creditAsset}:${testNetTokens.transfer.creditAmount}` })
+                                    await new Promise(resolve => setTimeout(resolve, 3000)); // 3 sec
+                                }
                                 var reqObj = {
                                     market: props.market,
                                     side: orderSide === "BUY" ? OrderSide.BUY : OrderSide.SELL,
@@ -84,7 +94,7 @@ function DyDxOrderComponent(props: any) {
                                 };
                                 console.log("Request sent for create order ", JSON.stringify(reqObj))
                                 const createOrderResponse = await private_client.private.createOrder(
-                                    reqObj, 
+                                    reqObj,
                                     accountResponse.account.positionId);
                                 console.log("Got Response from create order action");
                                 console.log(createOrderResponse);
@@ -94,7 +104,7 @@ function DyDxOrderComponent(props: any) {
                                 console.log(errorFromCreateOrder)
                                 const err = errorFromCreateOrder as AxiosError
                                 const str = JSON.parse(err.message.substring(err.message.indexOf("-") + 1))
-                                setShowAlert({ show: true, title: "Create Order Failed", body: str.errors[0].msg })
+                                setShowAlert({ variant: "danger", show: true, title: "Create Order Failed", body: str.errors[0].msg })
                                 setShow(false)
                             }
                         });
@@ -110,12 +120,12 @@ function DyDxOrderComponent(props: any) {
     }
 
     const closeAlert = (arg: any) => {
-        setShowAlert({ show: false, title: "", body: "" })
+        setShowAlert(alert_constant)
     }
 
     return (
         <>
-            <AlertComponent show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert} />
+            <AlertComponent variant={showAlert.variant} show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert} />
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setShow(true)}>
                 Transact
             </button>
@@ -165,7 +175,7 @@ function DyDxOrderComponent(props: any) {
                             </Col>
                             <Col>
                                 <InputGroup className="mb-3">
-                                    <Form.Control type="number" name="price" step=".0001" value={secondCurrency} onChange={(tarEnv) => setSecondCurrency(parseFloat(tarEnv.target.value))} disabled/>
+                                    <Form.Control type="number" name="price" step=".0001" value={secondCurrency} onChange={(tarEnv) => setSecondCurrency(parseFloat(tarEnv.target.value))} disabled />
                                     <InputGroup.Text id="basic-addon1">{props.market.split('-')[1]}</InputGroup.Text>
                                 </InputGroup>
                             </Col>
@@ -199,7 +209,7 @@ function DyDxOrderComponent(props: any) {
                         </Accordion>
                     </Form.Group>
                     <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" value={checkBoxChecked+""} onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
+                        <Form.Check type="checkbox" label="MetaMask or Wallet selected may ask for max 2 signing of transaction" value={checkBoxChecked + ""} onChange={(tarEnv) => setCheckBoxChecked(tarEnv.target.checked)} />
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
