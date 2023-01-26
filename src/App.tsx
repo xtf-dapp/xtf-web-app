@@ -4,6 +4,7 @@ import {
   Route,
 } from "react-router-dom";
 
+import { ReactNotifications } from 'react-notifications-component'
 import AboutUs from "./components/about-us/AboutUsComponent";
 import Blog from "./components/blog/BlogComponent";
 import Home from "./components/home/HomeComponent";
@@ -12,9 +13,13 @@ import Profile from "./components/profile/ProfileComponent";
 import DyDxComponent from "./components/trade/dydx/DyDxComponent";
 import Trade from "./components/trade/TradeComponent";
 
+import 'react-notifications-component/dist/theme.css'
+
+
 function App() {
   return (
     <div>
+      <ReactNotifications />
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />

@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { Modal, Form, Button, Row, Col, InputGroup, Accordion } from 'react-bootstrap';
 import { DydxClient, SigningMethod, OrderSide, TimeInForce, OrderType, Market, ApiKeyCredentials } from '@dydxprotocol/v3-client';
 import Web3 from 'web3'
-import AlertComponent from '../../alert/AlertComponent';
 import { AxiosError } from 'axios';
+import { NOTIFICATION_TYPE, Store } from 'react-notifications-component';
 
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
 const DYDX_NETWORK_ID = 5;
-const alert_constant = { show: false, title: "", body: "", variant: "danger" };
 
 function DyDxOrderComponent(props: any) {
     const [show, setShow] = useState(false);
@@ -18,17 +17,18 @@ function DyDxOrderComponent(props: any) {
     const [secondCurrency, setSecondCurrency] = useState(0.0);
     const [firstCurrency, setFirstCurrency] = useState(0.01);
     const [price, setPrice] = useState(1000);
-    const [showAlert, setShowAlert] = useState(alert_constant);
     const [checkBoxChecked, setCheckBoxChecked] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const connect = async () => {
+        
         if (!checkBoxChecked) {
-            setShowAlert({ variant: "danger", show: true, title: "Checkbox Unchecked", body: "In order to proceed, please agree to the transaction signing by the assumed wallet" })
+            alert('danger', "Checkbox Unchecked", "In order to proceed, please agree to the transaction signing by the assumed wallet")
             return;
         }
-        setShowAlert(alert_constant)
         if (window.ethereum) {
             console.log(window.ethereum)
+            setIsLoading(true)
             window.ethereum.request({ method: 'eth_accounts' }).then((accounts: any): void => {
                 if (accounts.length) {
                     var client: DydxClient = new DydxClient(
@@ -75,11 +75,10 @@ function DyDxOrderComponent(props: any) {
                                 console.log("response from get Accountts", accountResponse)
                                 const equity = +accountResponse.account.equity
                                 if (equity <= 0) {
-                                    setShowAlert({ variant: "warn", show: true, title: "Not enough funds", body: "Adding test net tokens" })
+                                    alert('warning', "Account Selected has no funds", 'Using Token API from DYDX to debit some test funds')
                                     await new Promise(resolve => setTimeout(resolve, 3000)); // 3 sec
                                     const testNetTokens = await private_client.private.requestTestnetTokens();
-                                    setShowAlert({ variant: "info", show: true, title: "Adding funds", body: `Amount with ${testNetTokens.transfer.creditAsset}:${testNetTokens.transfer.creditAmount}` })
-                                    await new Promise(resolve => setTimeout(resolve, 3000)); // 3 sec
+                                    alert('danger', "Test Funds Added", `Amount with ${testNetTokens.transfer.creditAsset}:${testNetTokens.transfer.creditAmount}`)
                                 }
                                 var reqObj = {
                                     market: props.market,
@@ -96,20 +95,26 @@ function DyDxOrderComponent(props: any) {
                                 const createOrderResponse = await private_client.private.createOrder(
                                     reqObj,
                                     accountResponse.account.positionId);
-                                console.log("Got Response from create order action");
-                                console.log(createOrderResponse);
+                                console.log("Got Response from create order action", createOrderResponse);
+                                alert('success', "Order Created", `Order Created with id ${createOrderResponse.order.id}`)
                                 setShow(false)
-
                             } catch (errorFromCreateOrder: any) {
                                 console.log(errorFromCreateOrder)
                                 const err = errorFromCreateOrder as AxiosError
                                 const str = JSON.parse(err.message.substring(err.message.indexOf("-") + 1))
-                                setShowAlert({ variant: "danger", show: true, title: "Create Order Failed", body: str.errors[0].msg })
+                                alert('danger', "Create Order Failed", str.errors[0].msg)
                                 setShow(false)
                             }
+
+                            setIsLoading(false)
+                        }).catch((err) => {
+                            console.log(err); 
+                            setIsLoading(false);
                         });
+                } else {
+                    setIsLoading(false)
                 }
-            })
+            }).catch((err: any) => { console.log(err); setIsLoading(false); } )
         }
     }
 
@@ -119,13 +124,24 @@ function DyDxOrderComponent(props: any) {
         return newDate.toISOString();
     }
 
-    const closeAlert = (arg: any) => {
-        setShowAlert(alert_constant)
+    const alert = (variant: NOTIFICATION_TYPE, title: string, body: string) => {
+        Store.addNotification({
+            title: title,
+            message: body,
+            type: variant,
+            insert: "top",
+            container: "top-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+                duration: 5000,
+                onScreen: true
+            }
+        });
     }
 
     return (
         <>
-            <AlertComponent variant={showAlert.variant} show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert} />
             <button type="button" className="btn btn-primary btn-sm" onClick={() => setShow(true)}>
                 Transact
             </button>
@@ -213,8 +229,8 @@ function DyDxOrderComponent(props: any) {
                     </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShow(false)}>Close</Button>
-                    <Button variant="primary" onClick={() => connect()}>Trade</Button>
+                    <Button variant="secondary" onClick={() => setShow(false)} disabled={isLoading}>Close</Button>
+                    <Button variant="primary" onClick={() => connect()} disabled={isLoading}>Trade</Button>
                 </Modal.Footer>
             </Modal>
         </>

@@ -1,18 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Navbar, Nav, Container } from 'react-bootstrap';
-import AlertComponent from '../alert/AlertComponent';
 import './NavigationComponent.css'
+import { Store } from 'react-notifications-component';
 
 const navigation = [
   { name: 'Home', href: '/xtf-web-app/', current: false },
-  { name: 'About Us', href:  '/xtf-web-app/#/about-us', current: false },
+  { name: 'About Us', href: '/xtf-web-app/#/about-us', current: false },
   { name: 'Journey', href: '/xtf-web-app/#/journey', current: false },
   { name: 'Blog', href: '/xtf-web-app/#/blog', current: false },
 ]
 
 export default function NavigationBar(props: any) {
   const [defaultAccount, setDefaultAccount] = useState(null);
-  const [showAlert, setShowAlert] = useState({ show: false, title: "", body: "" });
 
   useEffect(() => {
 
@@ -49,7 +48,19 @@ export default function NavigationBar(props: any) {
           setDefaultAccount(result[0]);
         })
     } else {
-      setShowAlert({ show: true, title: "Error Message", body: "Install Metamask" });
+      Store.addNotification({
+        title: "Wallet Not Found!",
+        message: "Install Metamask or any wallet",
+        type: "danger",
+        insert: "top",
+        container: "top-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+          duration: 5000,
+          onScreen: true
+        }
+      });
     }
   }
 
@@ -67,14 +78,9 @@ export default function NavigationBar(props: any) {
     }
   }
 
-  const closeAlert = (arg: any) => {
-    console.log("something")
-    setShowAlert({ show: false, title: "", body: "" })
-  }
 
   return (
     <div>
-      <AlertComponent show={showAlert.show} title={showAlert.title} body={showAlert.body} setShowAlert={closeAlert} />
       <Navbar collapseOnSelect expand="lg" bg="primary" variant="dark" className="navbar-custom">
         <Container>
           <Navbar.Brand href="/xtf-web-app/">XTF</Navbar.Brand>
