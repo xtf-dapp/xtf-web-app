@@ -10,7 +10,7 @@ function DyDxComponent() {
     const [markets, setMarkets] = useState([])
 
     const retrieveMarkets = async () => {
-        const client: DydxClient = new DydxClient(
+        const public_client: DydxClient = new DydxClient(
             DYDX_HOST,
             {
                 apiTimeout: 3000,
@@ -18,7 +18,7 @@ function DyDxComponent() {
             },
         );
         if (markets.length <= 0) {
-            client.public.getMarkets().then((response) => {
+            public_client.public.getMarkets().then((response) => {
                 console.log(response);
                 const local_markets: any = [];
                 for (var key in response.markets) {
@@ -36,7 +36,6 @@ function DyDxComponent() {
     return (
         <div>
             <NavbarComponent />
-            <h4>Markets</h4>
             {markets.length > 0 ?
                 <Table striped bordered hover>
                     <thead>

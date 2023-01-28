@@ -21,7 +21,7 @@ function DyDxOrderComponent(props: any) {
     const [isLoading, setIsLoading] = useState(false);
 
     const connect = async () => {
-        
+
         if (!checkBoxChecked) {
             alert('danger', "Checkbox Unchecked", "In order to proceed, please agree to the transaction signing by the assumed wallet")
             return;
@@ -108,15 +108,30 @@ function DyDxOrderComponent(props: any) {
 
                             setIsLoading(false)
                         }).catch((err) => {
-                            console.log(err); 
+                            console.log(err);
                             setIsLoading(false);
                         });
                 } else {
                     setIsLoading(false)
                 }
-            }).catch((err: any) => { console.log(err); setIsLoading(false); } )
+            }).catch((err: any) => { console.log(err); setIsLoading(false); })
+        } else {
+            Store.addNotification({
+                title: "Wallet Not Found!",
+                message: "Install Metamask or any wallet",
+                type: "danger",
+                insert: "top",
+                container: "top-right",
+                animationIn: ["animate__animated", "animate__fadeIn"],
+                animationOut: ["animate__animated", "animate__fadeOut"],
+                dismiss: {
+                    duration: 5000,
+                    onScreen: true
+                }
+            });
         }
     }
+
 
     const addOneDay = () => {
         const newDate = new Date();
