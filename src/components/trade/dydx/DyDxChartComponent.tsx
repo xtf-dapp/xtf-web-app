@@ -1,13 +1,11 @@
 import { CandleResolution, DydxClient, Market } from "@dydxprotocol/v3-client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "../../navigation/NavigationComponent";
 import { Button, Col, Form, Row } from "react-bootstrap";
 import DyDxCandleChartComponent from "./DyDxCandleChartComponent";
 import { createChart, ColorType, OhlcData } from 'lightweight-charts';
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
-
-const markets: string[] = [Market.BTC_USD, Market.ETH_USD]
 
 const resolutions: string[] = [CandleResolution.ONE_MIN, CandleResolution.FIFTEEN_MINS, CandleResolution.THIRTY_MINS, CandleResolution.ONE_HOUR, CandleResolution.FOUR_HOURS, CandleResolution.ONE_DAY]
 
@@ -16,6 +14,22 @@ function DyDxChartComponent(props: any) {
     const [resolution, setResolution] = useState<any>(CandleResolution.ONE_DAY)
     const [data, setData] = useState<any>([])
     const [isLoading, setIsLoading] = useState(false)
+    const [markets, setMarkets] = useState<any>([])
+
+    const public_client = new DydxClient(DYDX_HOST);
+
+    useEffect(
+        () => {
+            console.log("In DyDxChartComponent")
+            load_data_in_time()
+            const new_markets: any = []
+            public_client.public.getMarkets().then((marketsResponse) => {
+                for (var key in marketsResponse.markets) {
+                    new_markets.push(marketsResponse.markets[key].market);
+                }
+                setMarkets(new_markets)
+            });
+        }, []);
 
     const updateMarket = (tarEnv: any) => {
         setMarket(tarEnv.target.value)
@@ -38,7 +52,7 @@ function DyDxChartComponent(props: any) {
 
     const load_data_in_time = () => {
         setIsLoading(true)
-        const public_client = new DydxClient(DYDX_HOST);
+        
 
         public_client.public.getCandles({
             market: market,
@@ -51,7 +65,7 @@ function DyDxChartComponent(props: any) {
             const updatedData: OhlcData[] = [];
 
             candles.forEach((item) => {
-                const ob = { time: convertDate(item.startedAt), open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
+                const ob = { time: new Date(item.startedAt).getTime(), open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
                 updatedData.push(ob);
             })
             setData(updatedData);
@@ -70,7 +84,7 @@ function DyDxChartComponent(props: any) {
                     <Col>
                         <Form.Label>Market</Form.Label>
                         <Form.Select value={market} onChange={(tarEnv) => updateMarket(tarEnv)} disabled={isLoading}>
-                            {markets.map(item => (<option value={item}>{item}</option>))}
+                            {markets.map((item: any) => (<option value={item}>{item}</option>))}
                         </Form.Select>
                     </Col>
                     <Col>
