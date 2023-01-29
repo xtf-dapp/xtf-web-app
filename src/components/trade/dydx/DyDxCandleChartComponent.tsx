@@ -1,7 +1,7 @@
 import { CandleResolution, DydxClient, Market } from "@dydxprotocol/v3-client";
 import { useState } from "react";
 import Navbar from "../../navigation/NavigationComponent";
-import { createChart, ColorType } from 'lightweight-charts';
+import { createChart, ColorType, OhlcData } from 'lightweight-charts';
 import React, { useEffect, useRef } from 'react';
 
 
@@ -18,7 +18,7 @@ const const_data = [
 ];
 
 function DyDxCandleChartComponent(props: any) {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<OhlcData[]>([]);
 
     const {
         colors: {
@@ -63,16 +63,37 @@ function DyDxCandleChartComponent(props: any) {
         [data, backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]
     );
 
+    const convertDate = (date: string) => {
+        const dateObject = new Date(date);
+        const year = dateObject.getFullYear();
+        const month = (dateObject.getMonth() + 1).toString().padStart(2, '0');
+        const day = dateObject.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate;
+    }
+
     const load_data_in_time = (series: any) => {
-        setTimeout(() => {
-            series.update({ time: '2018-12-29', open: 131.33, high: 151.17, low: 77.68, close: 96.43 })
-            setTimeout(() => {
-                series.update({ time: '2018-12-30', open: 106.33, high: 110.20, low: 90.39, close: 98.10 })
-                setTimeout(() => {
-                    series.update({ time: '2018-12-31', open: 109.87, high: 114.69, low: 85.66, close: 111.26 })
-                }, 1000);
-            }, 1000);
-        }, 1000);
+        const public_client = new DydxClient(DYDX_HOST);
+        public_client.public.getCandles({
+            market: Market.BTC_USD,
+            resolution: CandleResolution.ONE_DAY,
+        }).then((response) => {
+            const candles = response.candles;
+            console.log("incoming candles {}", JSON.stringify(candles))
+
+            candles.sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
+
+            console.log("sorting call ", JSON.stringify(candles));
+
+            const updatedData: OhlcData[] = [];
+
+            candles.forEach((item) => {
+                const ob = { time: convertDate(item.startedAt), open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
+                updatedData.push(ob);
+                series.update(ob);
+            })
+            setData(updatedData);
+        })
     }
 
     return (
