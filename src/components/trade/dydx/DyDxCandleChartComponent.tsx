@@ -3,19 +3,12 @@ import { useState } from "react";
 import Navbar from "../../navigation/NavigationComponent";
 import { createChart, ColorType, OhlcData } from 'lightweight-charts';
 import React, { useEffect, useRef } from 'react';
+import { Button, Col, Form, Row } from "react-bootstrap";
 
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
 
-const const_data = [
-    { time: '2018-12-22', open: 75.16, high: 82.84, low: 36.16, close: 45.72 },
-    { time: '2018-12-23', open: 45.12, high: 53.90, low: 45.12, close: 48.09 },
-    { time: '2018-12-24', open: 60.71, high: 60.71, low: 53.39, close: 59.29 },
-    { time: '2018-12-25', open: 68.26, high: 68.26, low: 59.04, close: 60.50 },
-    { time: '2018-12-26', open: 67.71, high: 105.85, low: 66.67, close: 91.04 },
-    { time: '2018-12-27', open: 91.04, high: 121.40, low: 82.70, close: 111.40 },
-    { time: '2018-12-28', open: 111.51, high: 142.83, low: 103.34, close: 131.25 },
-];
+var newSeries: any = null;
 
 function DyDxCandleChartComponent(props: any) {
     const [data, setData] = useState<OhlcData[]>([]);
@@ -48,12 +41,12 @@ function DyDxCandleChartComponent(props: any) {
             });
             chart.timeScale().fitContent();
 
-            const newSeries = chart.addCandlestickSeries();
+            newSeries = chart.addCandlestickSeries();
             newSeries.setData(data);
 
             window.addEventListener('resize', handleResize);
 
-            load_data_in_time(newSeries)
+            load_data_in_time()
             return () => {
                 window.removeEventListener('resize', handleResize);
 
@@ -72,25 +65,23 @@ function DyDxCandleChartComponent(props: any) {
         return formattedDate;
     }
 
-    const load_data_in_time = (series: any) => {
+    const load_data_in_time = () => {
         const public_client = new DydxClient(DYDX_HOST);
+
         public_client.public.getCandles({
-            market: Market.BTC_USD,
-            resolution: CandleResolution.ONE_DAY,
+            market: props.market,
+            resolution: props.resolution,
         }).then((response) => {
             const candles = response.candles;
-            console.log("incoming candles {}", JSON.stringify(candles))
 
             candles.sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
-
-            console.log("sorting call ", JSON.stringify(candles));
 
             const updatedData: OhlcData[] = [];
 
             candles.forEach((item) => {
                 const ob = { time: convertDate(item.startedAt), open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
                 updatedData.push(ob);
-                series.update(ob);
+                newSeries.update(ob);
             })
             setData(updatedData);
         })
@@ -98,7 +89,6 @@ function DyDxCandleChartComponent(props: any) {
 
     return (
         <>
-            <Navbar />
             <div
                 ref={chartContainerRef}
             />

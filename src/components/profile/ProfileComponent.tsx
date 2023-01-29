@@ -43,7 +43,7 @@ function Profile() {
     connectWalletHandler()
     return (
         <div>
-            <Navbar />
+            <Navbar currentNode="Profile" />
             <div className="jumbotron">
                 {errorMessage}
                 <h1 className="display-4">Hello!</h1>
