@@ -1,9 +1,5 @@
-import { CandleResolution, DydxClient, Market } from "@dydxprotocol/v3-client";
-import { useState } from "react";
-import Navbar from "../../navigation/NavigationComponent";
-import { createChart, ColorType, OhlcData } from 'lightweight-charts';
+import { createChart, ColorType } from 'lightweight-charts';
 import React, { useEffect, useRef } from 'react';
-import { Button, Col, Form, Row } from "react-bootstrap";
 
 function DyDxCandleChartComponent(props: any) {
 
@@ -50,7 +46,7 @@ function DyDxCandleChartComponent(props: any) {
         [data, backgroundColor, lineColor, textColor, areaTopColor, areaBottomColor]
     );
 
-    
+
 
     return (
         <>

@@ -60,12 +60,14 @@ function DyDxChartComponent(props: any) {
         }).then((response) => {
             const candles = response.candles;
 
-            candles.sort((a, b) => new Date(a.startedAt).getTime() - new Date(b.startedAt).getTime())
+            candles.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())
 
             const updatedData: OhlcData[] = [];
 
             candles.forEach((item) => {
-                const ob = { time: new Date(item.startedAt).getTime(), open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
+                console.log(item)
+                const ob = { time: new Date(item.updatedAt).getTime() /1000, open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
+                console.log(ob)
                 updatedData.push(ob);
             })
             setData(updatedData);
