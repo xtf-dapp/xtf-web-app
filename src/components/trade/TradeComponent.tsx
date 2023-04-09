@@ -54,7 +54,7 @@ function Trade(props: any) {
                         GMX.io is a decentralized exchange (DEX) built on the Ethereum blockchain as a decentralized application (dApp).
                         GMX.io provides liquidity pools, allowing users to earn rewards by staking their tokens. Overall, GMX.io aims to provide a decentralized, efficient, and user-friendly platform for cryptocurrency trading.
                     </Card.Text>
-                    <Button variant="primary" href={traders.find(item => item.title == "GMX Exchange")?.href} >Trade</Button>
+                    <Button variant="secondary" href={traders.find(item => item.title == "GMX Exchange")?.href} disabled>Coming Soon</Button>
                 </Card.Body>
             </Card>
             <Card border="info" style={{ width: '18rem', margin: '20px' }}>
@@ -65,7 +65,7 @@ function Trade(props: any) {
                     Gains.trade is a decentralized trading platform built on the Binance Smart Chain. 
                     It offers users a range of features, including yield farming, staking, and a decentralized exchange. The platform's native token is GAINS.
                     </Card.Text>
-                    <Button variant="primary" href={traders.find(item => item.title == "Gains Exchange")?.href} >Trade</Button>
+                    <Button variant="secondary" href={traders.find(item => item.title == "Gains Exchange")?.href} disabled>Coming Soon</Button>
                 </Card.Body>
             </Card>
             <Card border="info" style={{ width: '18rem', margin: '20px' }}>
@@ -76,7 +76,7 @@ function Trade(props: any) {
                     Synthetix is a decentralized protocol on the Ethereum blockchain that enables the creation and trading of synthetic assets, 
                     including stocks, commodities, and cryptocurrencies. The platform's native token is SNX.
                     </Card.Text>
-                    <Button variant="primary" href={traders.find(item => item.title == "Synthetix Exchange")?.href} >Trade</Button>
+                    <Button variant="secondary" href={traders.find(item => item.title == "Synthetix Exchange")?.href} disabled>Coming Soon</Button>
                 </Card.Body>
             </Card>
         </CardGroup>
