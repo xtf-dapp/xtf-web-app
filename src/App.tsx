@@ -16,6 +16,8 @@ import Trade from "./components/trade/TradeComponent";
 import 'react-notifications-component/dist/theme.css'
 import Footer from "./components/footer/FooterComponent";
 import DyDxChartComponent from "./components/trade/dydx/DyDxChartComponent";
+import TradeDashboard from "./components/trade/dashboard/TradeDashboardComponent";
+import JourneyComponent from "./components/journey/JourneyComponent";
 
 
 function App() {
@@ -31,6 +33,8 @@ function App() {
           <Route path="/trade" element={<Trade />} />
           <Route path="/trade/dydx" element={<DyDxComponent />} />
           <Route path="/trade/dydx/chart" element={<DyDxChartComponent />} />
+          <Route path="/trade/dashboard" element={<TradeDashboard />} />
+          <Route path="/journey" element={<JourneyComponent />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>

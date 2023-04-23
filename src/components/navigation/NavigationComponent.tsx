@@ -8,7 +8,6 @@ const navigation = [
   { name: 'About Us', href: '/xtf-web-app/#/about-us', current: false },
   { name: 'Journey', href: '/xtf-web-app/#/journey', current: false },
   { name: 'Blog', href: '/xtf-web-app/#/blog', current: false },
-  { name: 'Chart', href: '/xtf-web-app/#/trade/dydx/chart', current: false },
 ]
 
 export default function NavigationBar(props: any) {

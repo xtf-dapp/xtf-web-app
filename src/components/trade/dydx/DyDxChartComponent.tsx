@@ -2,7 +2,7 @@ import { CandleResolution, DydxClient, Market } from "@dydxprotocol/v3-client";
 import { useEffect, useState } from "react";
 import Navbar from "../../navigation/NavigationComponent";
 import { Button, Col, Form, Row } from "react-bootstrap";
-import DyDxCandleChartComponent from "./DyDxCandleChartComponent";
+import DyDxCandleChartComponent from "../dashboard/CandleChartComponent";
 import { createChart, ColorType, OhlcData } from 'lightweight-charts';
 
 const DYDX_HOST = 'https://api.stage.dydx.exchange';
@@ -14,7 +14,6 @@ function DyDxChartComponent(props: any) {
     const [resolution, setResolution] = useState<any>(CandleResolution.ONE_DAY)
     const [data, setData] = useState<any>([])
     const [isLoading, setIsLoading] = useState(false)
-    const [markets, setMarkets] = useState<any>([])
 
     const public_client = new DydxClient(DYDX_HOST);
 
@@ -27,7 +26,6 @@ function DyDxChartComponent(props: any) {
                 for (var key in marketsResponse.markets) {
                     new_markets.push(marketsResponse.markets[key].market);
                 }
-                setMarkets(new_markets)
             });
         }, []);
 
@@ -52,12 +50,13 @@ function DyDxChartComponent(props: any) {
 
     const load_data_in_time = () => {
         setIsLoading(true)
-        
+
 
         public_client.public.getCandles({
             market: market,
             resolution: resolution,
         }).then((response) => {
+            console.log(response)
             const candles = response.candles;
 
             candles.sort((a, b) => new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime())
@@ -66,7 +65,7 @@ function DyDxChartComponent(props: any) {
 
             candles.forEach((item) => {
                 console.log(item)
-                const ob = { time: new Date(item.updatedAt).getTime() /1000, open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
+                const ob = { time: new Date(item.updatedAt).getTime() / 1000, open: Number(item.open), high: Number(item.high), low: Number(item.low), close: Number(item.close) } as OhlcData;
                 console.log(ob)
                 updatedData.push(ob);
             })
@@ -79,28 +78,7 @@ function DyDxChartComponent(props: any) {
     }
 
     return (
-        <>
-            <Navbar currentNode="Chart" />
-            <Form>
-                <Row>
-                    <Col>
-                        <Form.Label>Market</Form.Label>
-                        <Form.Select value={market} onChange={(tarEnv) => updateMarket(tarEnv)} disabled={isLoading}>
-                            {markets.map((item: any) => (<option value={item}>{item}</option>))}
-                        </Form.Select>
-                    </Col>
-                    <Col>
-                        <Form.Label>Duration</Form.Label>
-                        <Form.Select value={resolution} onChange={(tarEnv) => updateResolution(tarEnv)} disabled={isLoading}>
-                            {resolutions.map(item => (<option value={item}>{item}</option>))}
-                        </Form.Select>
-                    </Col>
-                </Row>
-            </Form>
-            <br />
-            <br />
-            <DyDxCandleChartComponent data={data} />
-        </>
+        <div>Test12</div>
     );
 };
 

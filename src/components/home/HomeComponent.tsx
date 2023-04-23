@@ -1,13 +1,13 @@
 import NavbarComponent from '../navigation/NavigationComponent'
 import { Button, Card } from 'react-bootstrap';
-import Trade from '../trade/TradeComponent';
 import { useEffect } from 'react';
+import TradeDashboard from '../trade/dashboard/TradeDashboardComponent';
 
 function Home() {
     return (
         <div>
             <NavbarComponent />
-            <Trade />
+            <TradeDashboard />
         </div>
     );
 }
