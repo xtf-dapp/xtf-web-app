@@ -18,7 +18,7 @@ function JourneyComponent() {
                 </div>
                 <div className="timeline-item">
                     <div className="timeline-item-date">Mar 2023</div>
-                    <h2>POC iteration started</h2>
+                    <h2>DYDX Integration Begin</h2>
                     <p>The first proof of concept for the product was developed and tested.</p>
                 </div>
             </div>

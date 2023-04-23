@@ -28,11 +28,11 @@ or
 
 4) To Package (or Build)
 
-`npm predeploy`
+`npm run predeploy`
 
 5) To Deploy to Github Pages (GH-Pages)
 
-`npm deploy`
+`npm run deploy`
 
 All the code is tested and deployed with below config:
 
