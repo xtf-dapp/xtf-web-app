@@ -1,28 +1,28 @@
 {
   "files": {
     "main.css": "/xtf-web-app/static/css/main.ce1cb1b2.chunk.css",
-    "main.js": "/xtf-web-app/static/js/main.2197a356.chunk.js",
-    "main.js.map": "/xtf-web-app/static/js/main.2197a356.chunk.js.map",
-    "runtime-main.js": "/xtf-web-app/static/js/runtime-main.6b276ee4.js",
-    "runtime-main.js.map": "/xtf-web-app/static/js/runtime-main.6b276ee4.js.map",
+    "main.js": "/xtf-web-app/static/js/main.be2224b4.chunk.js",
+    "main.js.map": "/xtf-web-app/static/js/main.be2224b4.chunk.js.map",
+    "runtime-main.js": "/xtf-web-app/static/js/runtime-main.4de57f09.js",
+    "runtime-main.js.map": "/xtf-web-app/static/js/runtime-main.4de57f09.js.map",
     "static/css/2.35a0cff9.chunk.css": "/xtf-web-app/static/css/2.35a0cff9.chunk.css",
-    "static/js/2.c96d50e2.chunk.js": "/xtf-web-app/static/js/2.c96d50e2.chunk.js",
-    "static/js/2.c96d50e2.chunk.js.map": "/xtf-web-app/static/js/2.c96d50e2.chunk.js.map",
-    "static/js/3.e337835a.chunk.js": "/xtf-web-app/static/js/3.e337835a.chunk.js",
-    "static/js/3.e337835a.chunk.js.map": "/xtf-web-app/static/js/3.e337835a.chunk.js.map",
+    "static/js/2.fe088659.chunk.js": "/xtf-web-app/static/js/2.fe088659.chunk.js",
+    "static/js/2.fe088659.chunk.js.map": "/xtf-web-app/static/js/2.fe088659.chunk.js.map",
+    "static/js/3.157c0e47.chunk.js": "/xtf-web-app/static/js/3.157c0e47.chunk.js",
+    "static/js/3.157c0e47.chunk.js.map": "/xtf-web-app/static/js/3.157c0e47.chunk.js.map",
     "index.html": "/xtf-web-app/index.html",
     "static/css/2.35a0cff9.chunk.css.map": "/xtf-web-app/static/css/2.35a0cff9.chunk.css.map",
     "static/css/main.ce1cb1b2.chunk.css.map": "/xtf-web-app/static/css/main.ce1cb1b2.chunk.css.map",
-    "static/js/2.c96d50e2.chunk.js.LICENSE.txt": "/xtf-web-app/static/js/2.c96d50e2.chunk.js.LICENSE.txt",
+    "static/js/2.fe088659.chunk.js.LICENSE.txt": "/xtf-web-app/static/js/2.fe088659.chunk.js.LICENSE.txt",
     "static/media/dydx_exchange.8f876a5b.png": "/xtf-web-app/static/media/dydx_exchange.8f876a5b.png",
     "static/media/gmx_exchange.9da320d8.png": "/xtf-web-app/static/media/gmx_exchange.9da320d8.png",
     "static/media/synthetix_exchange.6b1fa4d9.jpeg": "/xtf-web-app/static/media/synthetix_exchange.6b1fa4d9.jpeg"
   },
   "entrypoints": [
-    "static/js/runtime-main.6b276ee4.js",
+    "static/js/runtime-main.4de57f09.js",
     "static/css/2.35a0cff9.chunk.css",
-    "static/js/2.c96d50e2.chunk.js",
+    "static/js/2.fe088659.chunk.js",
     "static/css/main.ce1cb1b2.chunk.css",
-    "static/js/main.2197a356.chunk.js"
+    "static/js/main.be2224b4.chunk.js"
   ]
 }
