@@ -4,11 +4,13 @@ import { ListGroup } from "react-bootstrap";
 interface Market {
     id: string;
     display_value: string;
+    first_currency: string;
+    second_currency: string;
 }
 
 const markets: Market[] = [
-    { id: "ETHUSDT", display_value: "ETH-USD" },
-    { id: "BTCUSDT", display_value: "BTC-USD" },
+    { id: "ETHUSDT", display_value: "ETH-USD", first_currency: "ETH", second_currency: "USD" },
+    { id: "BTCUSDT", display_value: "BTC-USD", first_currency: "BTC", second_currency: "USD" },
 ];
 
 interface ChildProps {

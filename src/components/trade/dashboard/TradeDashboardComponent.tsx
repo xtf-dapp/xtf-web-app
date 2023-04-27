@@ -6,6 +6,8 @@ import CandleChartComponent from './CandleChartComponent';
 import { CandleResolution, Market } from '@dydxprotocol/v3-client';
 import DyDxChartComponent from '../dydx/DyDxChartComponent';
 import TradeFormComponent from './TradeFormComponent';
+import { NOTIFICATION_TYPE, Store } from 'react-notifications-component';
+import TradeOrdersComponent from './TradeOrdersComponent';
 
 function TradeDashboard() {
     const [market, setMarket] = useState<any>("ETHUSDT")
